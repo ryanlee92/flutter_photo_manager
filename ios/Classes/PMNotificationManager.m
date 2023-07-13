@@ -94,11 +94,13 @@
                                                                fetchAssetCollectionsContainingAsset:asset
                                                                withType:PHAssetCollectionTypeAlbum
                                                                options:nil];
-            itemDict[@"id"] = object.localIdentifier;
+            itemDict[@"id"] = object.cloudIdentifier;
+            itemDict[@"localId"] = object.localIdentifier;
             NSMutableArray *collectionArray = [NSMutableArray new];
             for (PHAssetCollection *collection in collections) {
                 NSDictionary *collectionDict = @{
-                    @"id" : collection.localIdentifier,
+                    @"id" : collection.cloudIdentifier,
+                    @"localId": collection.localIdentifier,
                     @"title" : collection.localizedTitle
                 };
                 [collectionArray addObject:collectionDict];
@@ -128,3 +130,9 @@
     return _notifying;
 }
 @end
+
+extension PHAsset {
+    var cloudIdentifier: String {
+        return (self.value(forKey: "cloudIdentifier") as? String) ?? self.localIdentifier
+    }
+}
